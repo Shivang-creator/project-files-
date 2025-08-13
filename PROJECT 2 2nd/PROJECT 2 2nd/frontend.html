@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyst Agent - Frontend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .tasks-container {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .task-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .task-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .task-input button {
+            padding: 12px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .task-input button:hover {
+            background: #c82333;
+        }
+
+        .add-task-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            background: #218838;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .analyze-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-task {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .result-answer {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .extracted-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e1e5e9;
+        }
+
+        .analysis-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #667eea;
+            white-space: pre-wrap;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .examples {
+            background: #e7f3ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .examples h3 {
+            color: #004085;
+            margin-bottom: 15px;
+        }
+
+        .examples ul {
+            color: #004085;
+            padding-left: 20px;
+        }
+
+        .examples li {
+            margin-bottom: 8px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-healthy {
+            background: #28a745;
+        }
+
+        .status-error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Universal Data Analyst Agent</h1>
+            <p>Read and analyze ANY content from ANY URL - PDFs, Archives, Databases, S3 Files, Dynamic Sites, Static Pages, Images, Data Files</p>
+            <div class="subtitle">Universal Reader • Archive Support • Database Files • S3 Cloud • PDF • Dynamic Content • AI-powered • Multi-format</div>
+            <div style="margin-top: 15px;">
+                <span id="serverStatus">
+                    <span class="status-indicator status-error"></span>
+                    Checking server status...
+                </span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="dataUrl">🔗 Data URL</label>
+                    <input type="url" id="dataUrl" placeholder="Enter URL to analyze (CSV, PDF, webpage with tables, etc.)" 
+                           value="">
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Analysis Tasks</label>
+                    <div class="tasks-container" id="tasksContainer">
+                        <div class="task-input">
+                            <input type="text" placeholder="Enter analysis task..." value="Analyze the data and provide key insights">
+                            <button type="button" onclick="removeTask(this)">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-task-btn" onclick="addTask()">+ Add Another Task</button>
+                </div>
+
+                <button type="button" class="analyze-btn" onclick="analyzeData()" id="analyzeBtn">
+                    🚀 Analyze Data
+                </button>
+            </div>
+
+            <div class="examples">
+                <h3>💡 How to Use</h3>
+                
+                <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                    <h4 style="color: #155724; margin-bottom: 10px;">✅ Quick Start:</h4>
+                    <ol style="color: #155724; padding-left: 20px;">
+                        <li>Enter a URL containing data in the field above</li>
+                        <li>Add analysis tasks (what you want to know about the data)</li>
+                        <li>Click "Analyze Data" to get AI-powered insights</li>
+                        <li>View results with visualizations and detailed analysis</li>
+                    </ol>
+                </div>
+                
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                    <h4 style="color: #856404; margin-bottom: 10px;">🎯 Example Analysis Tasks:</h4>
+                    <ul style="color: #856404; padding-left: 20px;">
+                        <li>"What are the top 10 entries by value?"</li>
+                        <li>"Create a bar chart showing trends over time"</li>
+                        <li>"Calculate correlation between columns"</li>
+                        <li>"Find outliers and anomalies in the data"</li>
+                        <li>"Generate summary statistics"</li>
+                        <li>"Create a scatterplot of X vs Y"</li>
+                        <li>"Compare different categories in the data"</li>
+                        <li>"Show distribution of numerical values"</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                    <h4 style="color: #004085; margin-bottom: 10px;">📊 Supported Data Sources:</h4>
+                    <ul style="color: #004085; padding-left: 20px;">
+                        <li><strong>Data Files:</strong> CSV, Excel, JSON, Parquet files</li>
+                        <li><strong>Archives:</strong> .zip, .tar, .gz files with data</li>
+                        <li><strong>Databases:</strong> SQLite, database files</li>
+                        <li><strong>Cloud Storage:</strong> S3 URLs and cloud files</li>
+                        <li><strong>Documents:</strong> PDF files with tables</li>
+                        <li><strong>Web Pages:</strong> Sites with data tables</li>
+                        <li><strong>Images:</strong> Charts and graphs to analyze</li>
+                    </ul>
+                </div>
+                
+                <h4 style="margin-bottom: 10px;">🎯 Example URLs to Try:</h4>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 14px; border: 1px solid #dee2e6;">
+https://en.wikipedia.org/wiki/List_of_countries_by_GDP<br>
+https://data.gov/sample-dataset.csv<br>
+https://example.com/sales-data.xlsx<br>
+https://research.university.edu/data.zip<br>
+https://stats.website.com/economic-data.json
+                </div>
+
+                <div style="background: #d1ecf1; border-left: 4px solid #bee5eb; padding: 15px; margin-top: 15px; border-radius: 5px;">
+                    <h4 style="color: #0c5460; margin-bottom: 10px;">🔥 Enhanced OCR & Vision Features:</h4>
+                    <ul style="color: #0c5460; padding-left: 20px;">
+                        <li><strong>Smart Image Detection:</strong> ✅ Automatically finds charts in web pages</li>
+                        <li><strong>AI Vision Analysis:</strong> ✅ Google Gemini analyzes chart content</li>
+                        <li><strong>Multi-Mode OCR:</strong> ✅ 6 different OCR configurations for best results</li>
+                        <li><strong>Image Preprocessing:</strong> ✅ Contrast, sharpness, and noise reduction</li>
+                        <li><strong>GDP Data Recognition:</strong> ✅ Specialized detection for economic data</li>
+                        <li><strong>Smart Text Filtering:</strong> ✅ Removes noise, keeps meaningful data</li>
+                        <li><strong>Forecast Extraction:</strong> ✅ Finds IMF, World Bank predictions</li>
+                    </ul>
+                </div>
+
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-top: 15px; border-radius: 5px;">
+                    <h4 style="color: #856404; margin-bottom: 10px;">⚠️ Current Status:</h4>
+                    <ul style="color: #856404; padding-left: 20px;">
+                        <li><strong>Data Extraction:</strong> ✅ Working (scraping, schema detection)</li>
+                        <li><strong>Enhanced OCR:</strong> ✅ Multiple preprocessing methods active</li>
+                        <li><strong>Image/Chart Analysis:</strong> ✅ AI Vision + Enhanced OCR enabled</li>
+                        <li><strong>AI Analysis:</strong> ⚠️ Google Gemini quota may be limited</li>
+                        <li><strong>Alternative:</strong> Add OpenAI API key in .env file</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h2>📊 Results</h2>
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        
+        // Check server status on load
+        window.addEventListener('load', checkServerStatus);
+        
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'healthy') {
+                    document.getElementById('serverStatus').innerHTML = `
+                        <span class="status-indicator status-healthy"></span>
+                        Server Online - ${data.agent}
+                    `;
+                } else {
+                    throw new Error('Server not healthy');
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = `
+                    <span class="status-indicator status-error"></span>
+                    Server Offline - Please start the backend
+                `;
+            }
+        }
+        
+        function addTask() {
+            const container = document.getElementById('tasksContainer');
+            const newTask = document.createElement('div');
+            newTask.className = 'task-input';
+            newTask.innerHTML = `
+                <input type="text" placeholder="Enter analysis task...">
+                <button type="button" onclick="removeTask(this)">Remove</button>
+            `;
+            container.appendChild(newTask);
+        }
+        
+        function removeTask(button) {
+            const tasksContainer = document.getElementById('tasksContainer');
+            if (tasksContainer.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('At least one task is required!');
+            }
+        }
+        
+        async function analyzeData() {
+            const url = document.getElementById('dataUrl').value.trim();
+            if (!url) {
+                alert('Please enter a data URL');
+                return;
+            }
+            
+            const taskInputs = document.querySelectorAll('#tasksContainer input');
+            const tasks = Array.from(taskInputs)
+                .map(input => input.value.trim())
+                .filter(task => task.length > 0);
+            
+            if (tasks.length === 0) {
+                alert('Please enter at least one analysis task');
+                return;
+            }
+            
+            // Show loading state
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '🔄 Analyzing...';
+            
+            resultsSection.classList.add('show');
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing data... This may take a few moments.</p>
+                    <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                        Processing: Schema extraction → Image/Chart detection → Code generation → Data analysis → Visualization
+                    </p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`${API_BASE}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        tasks: tasks
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `Server error: ${response.status}`);
+                }
+                
+                const results = await response.json();
+                displayResults(tasks, results);
+                
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                let errorMessage = error.message;
+                let suggestions = [
+                    'Check if the URL is accessible and contains a table',
+                    'Verify the backend server is running on ' + API_BASE,
+                    'Ensure your tasks are clearly written',
+                    'Try a different URL or simpler tasks'
+                ];
+                
+                // Check for specific quota error
+                if (errorMessage.includes('quota') || errorMessage.includes('429')) {
+                    errorMessage = 'AI quota exceeded - Google Gemini daily limit reached (50 requests)';
+                    suggestions = [
+                        'Wait 24 hours for quota reset',
+                        'Add OpenAI API key to .env file and change AI_PROVIDER=openai',
+                        'Upgrade Google Gemini plan at ai.google.dev',
+                        'Basic data extraction still works without AI insights'
+                    ];
+                }
+                
+                resultsContainer.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Analysis Failed</h3>
+                        <p><strong>Error:</strong> ${errorMessage}</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            ${suggestions.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } finally {
+                // Reset button state
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '🚀 Analyze Data';
+            }
+        }
+        
+        function displayResults(tasks, results) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            let html = '';
+            
+            for (let i = 0; i < tasks.length && i < results.length; i++) {
+                const task = tasks[i];
+                const result = results[i];
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-task">📝 Task ${i + 1}: ${task}</div>
+                        <div class="result-answer">
+                `;
+                
+                // Check if result is a base64 image
+                if (result.startsWith('data:image/')) {
+                    html += `
+                        <div>📈 <strong>Visualization Generated:</strong></div>
+                        <img src="${result}" alt="Generated visualization" class="result-image">
+                        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                            Image size: ${Math.round(result.length / 1024)} KB
+                        </div>
+                    `;
+                } else if (result.includes('http') && (result.includes('.png') || result.includes('.jpg') || result.includes('.jpeg') || result.includes('.svg'))) {
+                    // Handle image URLs extracted from analysis
+                    html += `
+                        <div>🖼️ <strong>Image Found:</strong></div>
+                        <img src="${result}" alt="Extracted image" class="extracted-image">
+                        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                            Source: ${result}
+                        </div>
+                    `;
+                } else if (result.length > 200) {
+                    // Long text results (possibly detailed analysis)
+                    html += `
+                        <div>📊 <strong>Detailed Analysis:</strong></div>
+                        <div class="analysis-details">${result}</div>
+                    `;
+                } else {
+                    html += `<div>📊 <strong>Result:</strong> ${result}</div>`;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsContainer.innerHTML = html;
+        }
+        
+        // Allow Enter key to trigger analysis
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyzeData();
+            }
+        });
+    </script>
+</body>
+</html>

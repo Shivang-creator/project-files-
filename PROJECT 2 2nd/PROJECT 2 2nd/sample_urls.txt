@@ -1,0 +1,19 @@
+# Sample URLs for Batch Analysis
+# This file demonstrates the Universal Data Analyst Agent's capabilities
+
+# Wikipedia Tables - Rich structured data
+https://en.wikipedia.org/wiki/List_of_highest-grossing_films
+https://en.wikipedia.org/wiki/List_of_countries_by_population
+
+# Government Data - CSV and structured datasets
+https://data.gov/dataset/example
+
+# Research and Academic Data
+https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv
+
+# Example URLs that demonstrate various content types
+# (Note: Some URLs may be examples for demonstration)
+https://example.com/data.csv
+https://example.com/research.zip
+https://example.com/chart.png
+s3://example-bucket/data.parquet
